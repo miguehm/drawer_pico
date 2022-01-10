@@ -13,12 +13,8 @@ Check the tutorials on my YT's channel
 # ====== Matrices of Transformation ======
 # >>>>>>>>>>> Rotation Matrix >>>>>>>>>>>>
 
-def rotation(oled, data, name, alpha, beta, theta, amplifier):
+def rotation(coordinates, alpha, beta, theta):
     from math import sin, cos, pi
-    # Debuging
-    # Showing name
-    #if(data['shapes'][name]):
-        #print(f'> Name: {name}')
     
     RAD = pi/180 # 3.141/180 # Radian value
 
@@ -44,23 +40,46 @@ def rotation(oled, data, name, alpha, beta, theta, amplifier):
     s_theta = int(sin(theta*RAD)*presicion)/presicion
     c_theta = int(cos(theta*RAD)*presicion)/presicion
     
+    # auxiliar variable
+    newCoordinates = []
+    
     # Set lines on Display Oled process
-    for j in range(len(data['shapes'][name]['coordinates'])/3): # divide to 3 'cause the coordinates has three values (x,y,z)
-        x = data['shapes'][name]['coordinates'][j*3]
-        y = data['shapes'][name]['coordinates'][j*3+1]
-        z = data['shapes'][name]['coordinates'][j*3+2]
+    for j in range(len(coordinates)/3): # divide to 3 'cause the coordinates has three values (x,y,z)
+        x = coordinates[j*3]
+        y = coordinates[j*3+1]
+        z = coordinates[j*3+2]
         
         # Transformation Matrix
-        rx = ((x*c_theta*c_beta)+y*(-s_theta*c_alpha+c_theta*s_beta*s_alpha)+z*(s_theta*s_alpha+c_theta*s_beta*c_alpha))*amplifier
-        ry = ((x*s_theta*c_beta)+y*(c_theta*c_alpha+s_theta*s_beta*s_alpha)+z*(-c_theta*s_alpha+s_theta*s_beta*c_alpha))*amplifier
+        rx = ((x*c_theta*c_beta)+y*(-s_theta*c_alpha+c_theta*s_beta*s_alpha)+z*(s_theta*s_alpha+c_theta*s_beta*c_alpha))#*amplifier
+        newCoordinates.append(rx)
         
-        # Prepare the coordinates to line function
-        # 60: oled width / 2
-        # 30: oled height / 2
+        ry = ((x*s_theta*c_beta)+y*(c_theta*c_alpha+s_theta*s_beta*s_alpha)+z*(-c_theta*s_alpha+s_theta*s_beta*c_alpha))#*amplifier
+        newCoordinates.append(ry)
+        
+        rz = ((x*-s_beta)+(y*c_beta*s_alpha)+(z*c_beta*c_alpha))#*amplifier
+        newCoordinates.append(rz)
+        
+        #print(f'rx: {rx}, ry: {ry}, rz: {rz}')
+    
+    # Add a function traslation and send newCoordinates?
+    return newCoordinates
+
+def painter(oled, coordinates, amplifier):
+    # Auxiliaries variables
+    coord1 = [None, None]
+    coord2 = [None, None]
+    
+    # Prepare the coordinates to line function
+    # 64: oled width / 2
+    # 32: oled height / 2
+    for j in range(len(coordinates)/3):
+        x = (coordinates[j*3])*amplifier
+        y = (coordinates[j*3+1])*amplifier
+        
         if(j != 0):
-            coord2 = [int(rx)+60, -(int(ry))+30]
+            coord2 = [int(x)+64, -(int(y))+32]
         else:
-            coord1 = [int(rx)+60, -(int(ry))+30]
+            coord1 = [int(x)+64, -(int(y))+32]
             
         if(coord2[0]):
             """
@@ -76,10 +95,8 @@ def rotation(oled, data, name, alpha, beta, theta, amplifier):
             # Restarting the auxiliaries variables
             coord1 = coord2
             coord2 = [None, None]
-    
     # Debuging
     #print('\n')
-        
 
 class Drawer(object):
     def __init__(self, oled, data):
@@ -89,15 +106,19 @@ class Drawer(object):
 
     def rotation(self, name, alpha, beta, theta):
         try:
-            self.name = name
-            self.alpha = alpha
-            self.beta = beta
-            self.theta = theta
+            coordinates = self.data['shapes'][name]['coordinates']
             
-            rotation(self.oled, self.data, self.name, self.alpha, self.beta, self.theta, self.amplifier)
+            # Result of transformation
+            newCoordinates = rotation(coordinates, alpha, beta, theta)
+            
+            painter(self.oled, newCoordinates, self.amplifier)
             
         except:
-            print(f'The shape \"{self.name}\" does not exist!')
+            print(f'The shape \"{name}\" does not exist!')
     
     def setAmplifier(self, amplifier):
         self.amplifier = int(amplifier)
+        
+    def painter(self, name):
+        coordinates = self.data['shapes'][name]['coordinates']
+        painter(self.oled, coordinates, self.amplifier)
