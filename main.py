@@ -1,4 +1,4 @@
-from drawer import Drawer, rotation
+from drawer import Drawer
 
 # ========== Display Libraries ===========
 import machine
@@ -27,11 +27,12 @@ rz = 0
 fig = Drawer(oled, data)
 test = Drawer(oled, data2)
 
-amplifier = 9
+amplifier = 8
 
 fig.setAmplifier(amplifier)
 
-for i in range(180):
+
+for i in range(360):
     oled.fill(0)
     fig.rotation("letterM", i, i, i)
     fig.rotation("hyphen", i, i, i)
@@ -40,6 +41,20 @@ for i in range(180):
     #fig.rotation("y", i, i, i)
     #fig.rotation("z", i, i, i)
     #fig.rotation("cube", 0, 0, i)
-    test.rotation('x', -i, -i, -i)
+    fig.rotation('x', -i, -i, -i)
     oled.show() # Show the shapes on the Display
 
+
+#fig.painter('letterM')
+#oled.show()
+
+"""
+oled.fill(0)
+#fig.rotation("letterM", 0, 0, 0)
+fig.rotation('x', 0, 0, 0)
+fig.rotation('x', 0, 0, 30)
+fig.rotation('x', 0, 0, 45)
+fig.rotation('x', 0, 0, 60)
+fig.rotation('x', 0, 0, 90)
+oled.show()
+"""
