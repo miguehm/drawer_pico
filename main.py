@@ -18,32 +18,38 @@ with open('figures.json', 'r+') as file: # Open the JSON file
 with open('line.json', 'r+') as file: # Open the JSON file
     data2 = json.load(file) # Saving file to 'data'
 
-# User code
+with open('cube.json', 'r+') as file:
+    data3 = json.load(file)
 
+# User code
 rx = 0
 ry = 0
 rz = 0
 
-fig = Drawer(oled, data)
-test = Drawer(oled, data2)
+fig = Drawer(oled, data) # figures.json
+test = Drawer(oled, data2) # line.json
 
-amplifier = 8
+cube = Drawer(oled, data3) # dictionary
 
-fig.setAmplifier(amplifier)
+amplifier = 15 # Amplifier value
 
+fig.setAmplifier(amplifier) # Set amplifier
+cube.setAmplifier(amplifier)
 
-for i in range(360):
+#""" rotation animation
+for i in range(181):
     oled.fill(0)
-    fig.rotation("letterM", i, i, i)
-    fig.rotation("hyphen", i, i, i)
-    fig.rotation("letterM2", i, i, i)
+    #fig.rotation("letterM", 2*i, 2*i, 2*i)
+    #fig.rotation("hyphen", 2*i, 2*i, 2*i)
+    #fig.rotation("letterM2", 2*i, 2*i, 2*i)
     #fig.rotation("x", i, i, i)
     #fig.rotation("y", i, i, i)
     #fig.rotation("z", i, i, i)
-    #fig.rotation("cube", 0, 0, i)
-    fig.rotation('x', -i, -i, -i)
+    cube.rotation("cube", i*2, i*2, i*2)
+    cube.rotation("cube", -i*2, -i*2, -i*2)
+    #fig.rotation('x', -2*i, -2*i, -2*i)
     oled.show() # Show the shapes on the Display
-
+#"""
 
 #fig.painter('letterM')
 #oled.show()
@@ -52,9 +58,9 @@ for i in range(360):
 oled.fill(0)
 #fig.rotation("letterM", 0, 0, 0)
 fig.rotation('x', 0, 0, 0)
-fig.rotation('x', 0, 0, 30)
-fig.rotation('x', 0, 0, 45)
-fig.rotation('x', 0, 0, 60)
-fig.rotation('x', 0, 0, 90)
+#fig.rotation('x', 0, 0, 30)
+#fig.rotation('x', 0, 0, 45)
+#fig.rotation('x', 0, 0, 60)
+#fig.rotation('x', 0, 0, 90)
 oled.show()
 """
