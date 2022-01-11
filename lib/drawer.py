@@ -24,10 +24,6 @@ def rotation(coordinates, alpha, beta, theta):
     beta: respect to the 'y' axis
     theta: respect to the 'z' axis
     """
-
-    # Auxiliaries variables
-    coord1 = [None, None]
-    coord2 = [None, None]
     
     # Getting the Sine and Cosine values of the angles (alpha, beta, theta)
     presicion = 100 # Number of decimals for sine and cosine
@@ -49,6 +45,8 @@ def rotation(coordinates, alpha, beta, theta):
         y = coordinates[j*3+1]
         z = coordinates[j*3+2]
         
+        #print(coordinates[j*3])
+        
         # Transformation Matrix
         rx = ((x*c_theta*c_beta)+y*(-s_theta*c_alpha+c_theta*s_beta*s_alpha)+z*(s_theta*s_alpha+c_theta*s_beta*c_alpha))#*amplifier
         newCoordinates.append(rx)
@@ -57,9 +55,7 @@ def rotation(coordinates, alpha, beta, theta):
         newCoordinates.append(ry)
         
         rz = ((x*-s_beta)+(y*c_beta*s_alpha)+(z*c_beta*c_alpha))#*amplifier
-        newCoordinates.append(rz)
-        
-        #print(f'rx: {rx}, ry: {ry}, rz: {rz}')
+        newCoordinates.append(rz)   
     
     # Add a function traslation and send newCoordinates?
     return newCoordinates
@@ -106,15 +102,16 @@ class Drawer(object):
 
     def rotation(self, name, alpha, beta, theta):
         try:
+            # Saving coordinates info
             coordinates = self.data['shapes'][name]['coordinates']
             
             # Result of transformation
-            newCoordinates = rotation(coordinates, alpha, beta, theta)
+            coordinates = rotation(coordinates, alpha, beta, theta)
             
-            painter(self.oled, newCoordinates, self.amplifier)
+            painter(self.oled, coordinates, self.amplifier)
             
         except:
-            print(f'The shape \"{name}\" does not exist!')
+            print(f'The shape \"{name}\" does not exist or the coordinates are invalid!')
     
     def setAmplifier(self, amplifier):
         self.amplifier = int(amplifier)
