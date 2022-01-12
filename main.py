@@ -45,11 +45,16 @@ for i in range(181):
     #fig.rotation("x", i, i, i)
     #fig.rotation("y", i, i, i)
     #fig.rotation("z", i, i, i)
-    cube.rotation("cube", i*2, i*2, i*2)
-    cube.rotation("cube", -i*2, -i*2, -i*2)
+    cube.rotate("cube", -i*2, -i*2, -i*2)
+    cube.move('cube', (i/45)-2, 0, 0)
+    cube.draw('cube') # Apply changes
+    #cube.rotate("cube", -i*2, -i*2, -i*2)
     #fig.rotation('x', -2*i, -2*i, -2*i)
     oled.show() # Show the shapes on the Display
 #"""
+
+#cube.move('cube', -2, 0, 0)
+#oled.show()
 
 #fig.painter('letterM')
 #oled.show()
@@ -57,7 +62,9 @@ for i in range(181):
 """
 oled.fill(0)
 #fig.rotation("letterM", 0, 0, 0)
-fig.rotation('x', 0, 0, 0)
+cube.rotate('cube', 30, 30, 30)
+cube.move('cube', 3, 0, 0)
+cube.draw('cube')
 #fig.rotation('x', 0, 0, 30)
 #fig.rotation('x', 0, 0, 45)
 #fig.rotation('x', 0, 0, 60)
