@@ -13,7 +13,7 @@ Check the tutorials on my YT's channel
 # ====== Matrices of Transformation ======
 # >>>>>>>>>>> Rotation Matrix >>>>>>>>>>>>
 
-def rotation(coordinates, alpha, beta, theta):
+def rotate(coordinates, alpha, beta, theta):
     from math import sin, cos, pi
     
     RAD = pi/180 # 3.141/180 # Radian value
@@ -60,12 +60,59 @@ def rotation(coordinates, alpha, beta, theta):
     # Add a function traslation and send newCoordinates?
     return newCoordinates
 
-def painter(oled, coordinates, amplifier):
+def move(coordinates, distanceX, distanceY, distanceZ):
+    # auxiliar variable
+    newCoordinates = []
+    
+    # Set lines on Display Oled process
+    for j in range(len(coordinates)/3): # divide to 3 'cause the coordinates has three values (x,y,z)
+        x = coordinates[j*3]
+        y = coordinates[j*3+1]
+        z = coordinates[j*3+2]
+        
+        mx = x+distanceX
+        newCoordinates.append(mx)
+        
+        my = y+distanceY
+        newCoordinates.append(my)
+        
+        mz = z+distanceZ
+        newCoordinates.append(mz)
+        
+    return newCoordinates
+
+def draw(oled, coordinates, rotations, traslations, amplifier):
+    
+    # ================ Rotate ================
+    try:
+        rotationX = rotations[0]
+        rotationY = rotations[1]
+        rotationZ = rotations[2]
+        
+        # Making transformation
+        coordinates = rotate(coordinates, rotationX, rotationY, rotationZ)
+        
+    except:
+        print(f'The shape \"{name}\" does not exist or the coordinates are invalid!')
+        
+    # ================= Move =================
+    try:
+        traslationX = traslations[0]
+        traslationY = traslations[1]
+        traslationZ = traslations[2]
+        
+        # Making transformation
+        coordinates = move(coordinates, traslationX, traslationY, traslationZ)
+        
+    except:
+        print(f'The shape \"{name}\" does not exist or the coordinates are invalid!')
+    
+    # ================= Draw =================
     # Auxiliaries variables
     coord1 = [None, None]
     coord2 = [None, None]
     
-    # Prepare the coordinates to line function
+    # Prepare the coordinates to 'line' function
     # 64: oled width / 2
     # 32: oled height / 2
     for j in range(len(coordinates)/3):
@@ -99,23 +146,62 @@ class Drawer(object):
         self.oled = oled
         self.data = data
         self.amplifier = 6 # Default value
-
-    def rotation(self, name, alpha, beta, theta):
-        try:
-            # Saving coordinates info
-            coordinates = self.data['shapes'][name]['coordinates']
-            
-            # Result of transformation
-            coordinates = rotation(coordinates, alpha, beta, theta)
-            
-            painter(self.oled, coordinates, self.amplifier)
-            
-        except:
-            print(f'The shape \"{name}\" does not exist or the coordinates are invalid!')
-    
+        
     def setAmplifier(self, amplifier):
         self.amplifier = int(amplifier)
+
+    def rotate(self, name, alpha, beta, theta):
         
-    def painter(self, name):
-        coordinates = self.data['shapes'][name]['coordinates']
-        painter(self.oled, coordinates, self.amplifier)
+        # Cheking if the shape exist
+        try:
+            if(self.data['shapes'][name]):
+                self.data['shapes'][name]['rotations'] = [0,0,0]
+        except:
+            print(f'The shape \"{name}\" does not exist or the coordinates are invalid!')
+        
+        # Saving rotation values
+        self.data['shapes'][name]['rotations'][0] = alpha
+        self.data['shapes'][name]['rotations'][1] = beta
+        self.data['shapes'][name]['rotations'][2] = theta
+    
+    def move(self, name, distanceX, distanceY, distanceZ):
+        
+        # Cheking if the shape exist
+        try:
+            if(self.data['shapes'][name]):
+                self.data['shapes'][name]['traslations'] = [0,0,0]
+        except:
+            print(f'The shape \"{name}\" does not exist!')
+        
+        # Saving traslation values
+        self.data['shapes'][name]['traslations'][0] = distanceX
+        self.data['shapes'][name]['traslations'][1] = distanceY
+        self.data['shapes'][name]['traslations'][2] = distanceZ
+    
+    def draw(self, name):
+        
+        # Checking if 'rotations' exist
+        try:
+            if(self.data['shapes'][name]['rotations']):
+                pass
+        except:
+            self.data['shapes'][name]['rotations'] = [0,0,0]
+        
+        # Checking if 'traslations' exist
+        try:
+            if(self.data['shapes'][name]['traslations']):
+                pass
+        except:
+            self.data['shapes'][name]['traslations'] = [0,0,0]
+        
+        # Cheking if 'coordinates' has x, y, z coordinates format
+        try:
+            if(len(self.data['shapes'][name]['coordinates'])%3 == 0):
+                # Sending information
+                rotations = self.data['shapes'][name]['rotations']
+                traslations = self.data['shapes'][name]['traslations']
+                coordinates = self.data['shapes'][name]['coordinates']
+        except:
+            print(f'The coordinates are invalid!')
+        
+        draw(self.oled, coordinates, rotations, traslations, self.amplifier)
