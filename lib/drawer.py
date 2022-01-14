@@ -81,16 +81,16 @@ def move(coordinates, distanceX, distanceY, distanceZ):
     
     return newCoordinates
 
-def draw(oled, coordinates, rotations, traslations, tams, amplifier):
+def draw(oled, coordinates, rotations, traslations, resizes, amplifier):
     
-    # ================= Tam =================
+    # ================ Resize ================
     try:
-        tamX = tams[0]
-        tamY = tams[1]
-        tamZ = tams[2]
+        resizeX = resizes[0]
+        resizeY = resizes[1]
+        resizeZ = resizes[2]
         
         # Making transformation
-        coordinates = tam(coordinates, tamX, tamY, tamZ)
+        coordinates = resize(coordinates, resizeX, resizeY, resizeZ)
         
     except:
         print(f'The shape does not exist or the coordinates are invalid!')
@@ -107,7 +107,6 @@ def draw(oled, coordinates, rotations, traslations, tams, amplifier):
     except:
         print(f'The shape does not exist or the coordinates are invalid!')
         
-    #print(f'{__________MyError__________}')
     # ================= Move =================
     try:
         traslationX = traslations[0]
@@ -154,12 +153,12 @@ def draw(oled, coordinates, rotations, traslations, tams, amplifier):
     # Debuging
     #print('\n')
     
-def tam(coordinates, tamX, tamY, tamZ):
+def resize(coordinates, resizeX, resizeY, resizeZ):
     # auxiliar variable
     newCoordinates = []
     
-    if(not tamY):
-        tamZ=tamY=tamX
+    if(not resizeY):
+        resizeZ=resizeY=resizeX
     
     for j in range(len(coordinates)/3):
         x = coordinates[j*3]
@@ -167,9 +166,9 @@ def tam(coordinates, tamX, tamY, tamZ):
         z = coordinates[j*3+2]
         
         # Transformation Matrix
-        tx = x*tamX
-        ty = y*tamY
-        tz = z*tamZ
+        tx = x*resizeX
+        ty = y*resizeY
+        tz = z*resizeZ
         
         newCoordinates.append(tx)
         newCoordinates.append(ty)
@@ -214,26 +213,26 @@ class Drawer(object):
         self.data['shapes'][name]['traslations'][1] = distanceY
         self.data['shapes'][name]['traslations'][2] = distanceZ
         
-    def tam(self, name, x=1, y=None, z=None):
+    def resize(self, name, x=1, y=None, z=None):
         # Cheking if the shape exist
         try:
             if(self.data['shapes'][name]):
-                self.data['shapes'][name]['tam'] = [1,None,None]
+                self.data['shapes'][name]['resize'] = [1,None,None]
         except:
             print(f'The shape \"{name}\" does not exist!')
             
         # Saving traslation values
-        self.data['shapes'][name]['tam'][0] = x
-        self.data['shapes'][name]['tam'][1] = y
-        self.data['shapes'][name]['tam'][2] = z
+        self.data['shapes'][name]['resize'][0] = x
+        self.data['shapes'][name]['resize'][1] = y
+        self.data['shapes'][name]['resize'][2] = z
     
     def draw(self, name):
-        # Checking if 'tam' exist
+        # Checking if 'resize' exist
         try:
-            if(self.data['shapes'][name]['tam']):
+            if(self.data['shapes'][name]['resize']):
                 pass
         except:
-            self.data['shapes'][name]['tam'] = [1,1,1]
+            self.data['shapes'][name]['resize'] = [1,1,1]
         
         # Checking if 'rotations' exist
         try:
@@ -252,10 +251,11 @@ class Drawer(object):
         # Cheking if 'coordinates' has x, y, z coordinates format
         if(len(self.data['shapes'][name]['coordinates'])%3 == 0):
             # Sending information
-            tams = self.data['shapes'][name]['tam']
+            resizes = self.data['shapes'][name]['resize']
             rotations = self.data['shapes'][name]['rotations']
             traslations = self.data['shapes'][name]['traslations']
             coordinates = self.data['shapes'][name]['coordinates']
-            draw(self.oled, coordinates, rotations, traslations, tams, self.amplifier)
+            draw(self.oled, coordinates, rotations, traslations, resizes, self.amplifier)
         else:
             print(f'The coordinates are invalid!')
+
