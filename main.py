@@ -39,6 +39,7 @@ cube.setAmplifier(amplifier)
 #cube.tam('cube', 1)
 
 cube.resize('cube', 2, 1, 2) # amplify x, y or z size coordinate of specific figure
+#cube.move('cube', 0, 0, 0)
 #""" Rotate + Move 
 for i in range(181):
     oled.fill(0)
