@@ -101,55 +101,7 @@ def resize(coordinates, resizeX, resizeY, resizeZ):
         
     return newCoordinates
 
-def turn(array, element):
-    if(element in array):
-        array.remove(element)
-    
-    array.append(element)
-    return array
-
-def draw(oled, coordinates, rotations, traslations, resizes, turn, amplifier):
-    
-    for i in turn:
-        if(i == 1):
-            # ================ Rotate ================
-            try:
-                rotationX = rotations[0]
-                rotationY = rotations[1]
-                rotationZ = rotations[2]
-                
-                # Making transformation
-                coordinates = rotate(coordinates, rotationX, rotationY, rotationZ)
-                
-            except:
-                print(f'The shape does not exist or the coordinates are invalid!')
-        
-        elif(i == 2):
-            # ================= Move =================
-            try:
-                traslationX = traslations[0]
-                traslationY = traslations[1]
-                traslationZ = traslations[2]
-                
-                # Making transformation
-                coordinates = move(coordinates, traslationX, traslationY, traslationZ)
-                
-            except:
-                print(f'The shape does not exist or the coordinates are invalid!')
-                
-        elif(i == 3):
-            # ================ Resize ================
-            try:
-                resizeX = resizes[0]
-                resizeY = resizes[1]
-                resizeZ = resizes[2]
-                
-                # Making transformation
-                coordinates = resize(coordinates, resizeX, resizeY, resizeZ)
-                
-            except:
-                print(f'The shape does not exist or the coordinates are invalid!')
-    
+def draw(oled, coordinates, amplifier):
     
     # ================= Draw =================
     # Auxiliaries variables
@@ -169,111 +121,62 @@ def draw(oled, coordinates, rotations, traslations, resizes, turn, amplifier):
             coord1 = [int(x)+64, -(int(y))+32]
             
         if(coord2[0]):
-            """
-            # Debuging
-            # Getting values for each shape
-            print(f'rx1: {coord1[0]}, ry1: {coord1[1]}')
-            print(f'rx2: {coord2[0]}, ry2: {coord2[1]}')
-            print('================')
-            """
             # Creating line
             oled.line(coord1[0], coord1[1], coord2[0], coord2[1], 1) # Check for white screens
             
             # Restarting the auxiliaries variables
             coord1 = coord2
             coord2 = [None, None]
-    # Debuging
-    #print('\n')
 
 class Drawer(object):
     def __init__(self, oled, data):
         self.oled = oled
         self.data = data
+        self.copy = {}
         self.amplifier = 6 # Default value
-        self.turn = []
         
     def setAmplifier(self, amplifier):
         self.amplifier = int(amplifier)
 
+    def existCopy(self, name):
+        try:
+            if(self.copy[name]):
+                pass
+        except:
+            self.copy[name] = self.data['shapes'][name]['coordinates'].copy()
+
     def rotate(self, name, alpha, beta, theta):
+        self.existCopy(name)
+        coordinates = self.data['shapes'][name]['coordinates']
+        coordinates = rotate(coordinates, alpha, beta, theta)
+        self.data['shapes'][name]['coordinates'] = coordinates
         
-        # Cheking if the shape exist
-        try:
-            if(self.data['shapes'][name]):
-                self.data['shapes'][name]['rotations'] = [0,0,0]
-        except:
-            print(f'The shape \"{name}\" does not exist or the coordinates are invalid!')
-        
-        # Saving rotation values
-        self.data['shapes'][name]['rotations'][0] = alpha
-        self.data['shapes'][name]['rotations'][1] = beta
-        self.data['shapes'][name]['rotations'][2] = theta
-        
-        self.turn = turn(self.turn, 1)
-    
     def move(self, name, distanceX, distanceY, distanceZ):
-        
-        # Cheking if the shape exist
-        try:
-            if(self.data['shapes'][name]):
-                self.data['shapes'][name]['traslations'] = [0,0,0]
-        except:
-            print(f'The shape \"{name}\" does not exist!')
-        
-        # Saving traslation values
-        self.data['shapes'][name]['traslations'][0] = distanceX
-        self.data['shapes'][name]['traslations'][1] = distanceY
-        self.data['shapes'][name]['traslations'][2] = distanceZ
-        
-        self.turn = turn(self.turn, 2)
+        self.existCopy(name)
+        coordinates = self.data['shapes'][name]['coordinates']
+        coordinates = move(coordinates, distanceX, distanceY, distanceZ)
+        self.data['shapes'][name]['coordinates'] = coordinates
         
     def resize(self, name, x=1, y=None, z=None):
-        # Cheking if the shape exist
-        try:
-            if(self.data['shapes'][name]):
-                self.data['shapes'][name]['resize'] = [1,None,None]
-        except:
-            print(f'The shape \"{name}\" does not exist!')
-            
-        # Saving traslation values
-        self.data['shapes'][name]['resize'][0] = x
-        self.data['shapes'][name]['resize'][1] = y
-        self.data['shapes'][name]['resize'][2] = z
+        self.existCopy(name)
+        coordinates = self.data['shapes'][name]['coordinates']
         
-        self.turn = turn(self.turn, 3)
+        if(not y):
+            z = y = x
+            
+        coordinates = resize(coordinates, x, y, z)
+        self.data['shapes'][name]['coordinates'] = coordinates
     
     def draw(self, name):
-        # Checking if 'resize' exist
-        try:
-            if(self.data['shapes'][name]['resize']):
-                pass
-        except:
-            self.data['shapes'][name]['resize'] = [1,1,1]
-        
-        # Checking if 'rotations' exist
-        try:
-            if(self.data['shapes'][name]['rotations']):
-                pass
-        except:
-            self.data['shapes'][name]['rotations'] = [0,0,0]
-        
-        # Checking if 'traslations' exist
-        try:
-            if(self.data['shapes'][name]['traslations']):
-                pass
-        except:
-            self.data['shapes'][name]['traslations'] = [0,0,0]
-        
         # Cheking if 'coordinates' has x, y, z coordinates format
         if(len(self.data['shapes'][name]['coordinates'])%3 == 0):
             # Sending information
-            resizes = self.data['shapes'][name]['resize']
-            rotations = self.data['shapes'][name]['rotations']
-            traslations = self.data['shapes'][name]['traslations']
             coordinates = self.data['shapes'][name]['coordinates']
-            draw(self.oled, coordinates, rotations, traslations, resizes, self.turn, self.amplifier)
+            draw(self.oled, coordinates, self.amplifier)
             
-            #self.turn = [] # Activate if I want apply the changes for each iteration
+            # Reset coordinates
+            self.data['shapes'][name]['coordinates'] = self.copy[name].copy()
+            self.copy = {}
             
         else:
             print(f'The coordinates are invalid!')
