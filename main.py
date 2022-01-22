@@ -38,22 +38,45 @@ cube.setAmplifier(amplifier)
 
 #cube.tam('cube', 1)
 
-cube.resize('cube', 2, 1, 2) # amplify x, y or z size coordinate of specific figure
+#cube.resize('cube', 2, 1, 2) # amplify x, y or z size coordinate of specific figure
 #cube.move('cube', 0, 0, 0)
 #""" Rotate + Move 
 for i in range(181):
     oled.fill(0)
+    #"""
     oled.text('Drawer Test', 21, 5)
     oled.text('Rotate + Move', 13, 55)
     
-    cube.rotate('cube', -i*2, -i*2, -i*2)
-    cube.move('cube', (i/45)-2, 0, 0)
+    cube.resize('cube', 2)
+    cube.rotate('cube', i*2, i*2, i*2)
+    cube.move('cube', 4, 0, 0)
+    cube.rotate('cube', 0, 0, i*2)
     cube.draw('cube') # Apply changes
     
-    #cube.rotate('cube', i*2, i*2, i*2)
-    #cube.move('cube', (-i/45)+2, 0, 0)
-    #cube.draw('cube') # Apply changes
+    cube.resize('cube', 2)
+    cube.rotate('cube', -i*2, -i*2, -i*2)
+    cube.move('cube', -4, 0, 0)
+    cube.rotate('cube', 0, 0, -i*2)
+    cube.draw('cube') # Apply changes
+    #"""
+    """
+    cube.resize('cube', 1)
+    cube.rotate('cube', -i*2, -i*2, -i*2)
+    cube.move('cube', (i/45), 0, 0)
+    cube.draw('cube') # Apply changes
     
+    cube.resize('cube', 1)
+    cube.rotate('cube', i*2, i*2, i*2)
+    cube.move('cube', (-i/45)+2, 0, 0)
+    cube.draw('cube') # Apply changes
+    """
     
     oled.show() # Show the shapes on the Display
 #"""
+"""
+oled.fill(0)
+cube.rotate('cube', 0, 0, 30)
+cube.move('cube', 1, 0, 0)
+cube.draw('cube') # Apply changes
+oled.show()
+"""
