@@ -3,7 +3,6 @@ from drawer import Drawer
 # ========== Display Libraries ===========
 import machine
 i2c = machine.I2C(1, sda=machine.Pin(18), scl=machine.Pin(19))
-#i2c.scan()
 
 from ssd1306 import SSD1306_I2C
 oled = SSD1306_I2C(128, 64, i2c)
@@ -20,14 +19,11 @@ rx = 0
 ry = 0
 rz = 0
 
-cube = Drawer(oled, data3) # dictionary
+cube = Drawer(oled, data3) # Creating object Drawer
 
 amplifier = 12 # Amplifier value # Change 'amplifier' name for 'scale'
 
-#fig.setAmplifier(amplifier) # Set general scale (I must rename)
 cube.setAmplifier(amplifier)
-
-# Rotation Test
 
 def testRotateX():
     for i in range(90):
@@ -194,8 +190,6 @@ def testResize():
         cube.draw('cube') # Apply changes
         oled.show()
         
-    
-        
 def run():
     testRotateX()
     testRotateY()
@@ -204,48 +198,6 @@ def run():
     testRotateAndMove()
     testMoveAndRotate()
     testResize()
-
-def rotateAndMove():
-    #""" Rotate + Move 
-    for i in range(181):
-        oled.fill(0)
-        #"""
-        oled.text('Drawer Test', 21, 5)
-        oled.text('Rotate + Move', 13, 55)
-        
-        cube.resize('cube', 1, 2, 3)
-        cube.rotate('cube', i*2, i*2, i*2)
-        cube.move('cube', 4, 0, 0)
-        cube.rotate('cube', 0, 0, i*2)
-        cube.draw('cube') # Apply changes
-        
-        cube.resize('cube', 2)
-        cube.rotate('cube', -i*2, -i*2, -i*2)
-        cube.move('cube', -4, 0, 0)
-        cube.rotate('cube', 0, 0, -i*2)
-        cube.draw('cube') # Apply changes
-        #"""
-        """
-        cube.resize('cube', 1)
-        cube.rotate('cube', -i*2, -i*2, -i*2)
-        cube.move('cube', (i/45), 0, 0)
-        cube.draw('cube') # Apply changes
-        
-        cube.resize('cube', 1)
-        cube.rotate('cube', i*2, i*2, i*2)
-        cube.move('cube', (-i/45)+2, 0, 0)
-        cube.draw('cube') # Apply changes
-        """
-        
-        oled.show() # Show the shapes on the Display
-    #"""
-    """
-    oled.fill(0)
-    cube.rotate('cube', 0, 0, 30)
-    cube.move('cube', 1, 0, 0)
-    cube.draw('cube') # Apply changes
-    oled.show()
-    """
 
 if __name__ == '__main__':
     run()
