@@ -54,10 +54,10 @@ For example, if we want begin in `x:-2`, `y:2`, our path looks like this:
 === Let's draw! ===
 
 Put our pencil in 	-2, 2
-and go to 			 2, 2
-go to				 2, -2
-go to				-2, -2
-go to				-2, 2
+and go to 		 2, 2
+go to			 2, -2
+go to			-2, -2
+go to			-2, 2
 
 === Stop drawing. ===
 ```
@@ -69,11 +69,11 @@ We need to say that to our `main.py` file. So, you can create a `json` file para
     "shapes": {
         "square": {
             "coordinates": [
-				-2, 2, 0,
-				2, 2, 0,
-				2, -2, 0,
-				-2, -2, 0,
-				-2, 2, 0
+		-2, 2, 0,
+		2, 2, 0,
+		2, -2, 0,
+		-2, -2, 0,
+		-2, 2, 0
             ]
         }
     }
