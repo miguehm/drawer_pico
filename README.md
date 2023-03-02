@@ -62,7 +62,7 @@ go to			-2, 2
 === Stop drawing. ===
 ```
 
-We need to say that to our `main.py` file. So, you can create a `json` file para que el `drawer` sepa donde dibujar.
+We need to say that to our `main.py` file. You can create a `json` file, so the `drawer` will know where to draw.
 
 ```json
 {
@@ -113,7 +113,7 @@ square.rotate('square', rx, ry, rz)
 # my: move my distance in y-axis
 # mz: move mz distance in z-axis
 
-square.move('cube', mx, my, mz)
+square.move('square', mx, my, mz)
 ```
 
 ### Resize
@@ -123,5 +123,5 @@ square.move('cube', mx, my, mz)
 # sy: increase/decrease y-axis size
 # sz: increase/decrease z-axis size
 
-square.resize('cube', sx, sy, sz)
+square.resize('square', sx, sy, sz)
 ```
