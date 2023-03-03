@@ -2,7 +2,7 @@
 
 A library that simulates renderings of 3D figures on SSD1306 128x64 displays module running on Raspberry Pi Pico.
 
-![Cube example](images/example.gif){ width=60% }
+https://user-images.githubusercontent.com/80235345/222620217-a5fae7ae-37f3-46aa-a1b1-af97441f22ea.mp4
 
 ## You will need...
 
@@ -30,37 +30,41 @@ Inside your Pico, your files should look like this:
 └── main.py
 ```
 
-## Usage
+## First Usage
 
-You can run `main.py` file and you can see running the animation test:
+You can run `main.py` file and you can see running the **animation test**.
 
-![](image/example.gif){ width=60% }
+## How to Create a simple Figure
 
-## How to Import a 3D Figure
+> We will create a square to facilitate the explanations
 
 In 3D space we have three coordinates `x`, `y` and `z`.
 
-For this example, we begin creating a square of 2x2 size.
+For this example, we begin creating a square of 1x1 size.
 
-First at all, you need to define its coordinates in a plane.
+First at all, you need to define its coordinates.
 
-![](image/example-create-quare.png){ width=60% }
+![](https://user-images.githubusercontent.com/80235345/222619072-436f3022-1c03-45e1-b82e-dc9c1b1813c0.png)
+
+> Remember, you are in the 3D space.
 
 `drawer pico` works like a pencil in a paper, you need to indicate where begin and where finish.
 
-For example, if we want begin in `x:-2`, `y:2`, our path looks like this:
+For example, if we want begin in `x=-1`, `y=1`, `z=1` and finish in the same location, we need some like this:
 
 ```
 === Let's draw! ===
 
-Put our pencil in 	-2, 2
-and go to 		 2, 2
-go to			 2, -2
-go to			-2, -2
-go to			-2, 2
+Put our pencil in 	-1, 1, 0
+and go to 		 1, 1, 0
+and go to		 1, -1, 0
+and go to		-1, -1, 0
+and go to		-1, 1, 0
 
 === Stop drawing. ===
 ```
+
+![draw-step-by-step](https://user-images.githubusercontent.com/80235345/222619385-e75651f1-bb39-49e3-b558-430c71cce646.png)
 
 We need to say that to our `main.py` file. You can create a `json` file, so the `drawer` will know where to draw.
 
@@ -69,11 +73,11 @@ We need to say that to our `main.py` file. You can create a `json` file, so the 
     "shapes": {
         "square": {
             "coordinates": [
-		-2, 2, 0,
-		2, 2, 0,
-		2, -2, 0,
-		-2, -2, 0,
-		-2, 2, 0
+		-1, 1, 0,
+		1, 1, 0,
+		1, -1, 0,
+		-1, -1, 0,
+		-1, 1, 0
             ]
         }
     }
@@ -84,15 +88,13 @@ Once you create your `json` file, we need to import on your `main.py` file:
 
 ```python
 # Reading the figures file
-with open('cube.json', 'r+') as file:
+with open('square.json', 'r+') as file:
     data = json.load(file)
 
 square = Drawer(oled, data) # Creating object Drawer
 ```
 
 It's ready!, now, you can use some methods like `rotate`, `move` and `resize`.
-
-![](image/example){ width=60% }
 
 ## Methods
 
