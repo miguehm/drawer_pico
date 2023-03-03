@@ -6,7 +6,7 @@ https://user-images.githubusercontent.com/80235345/222620217-a5fae7ae-37f3-46aa-
 
 ## You will need...
 
-- Basic knowledges about Python and electronic circuits.
+- Basic knowledges about Python and SSD1306 basic usage with Raspberry Pi Pico
 - Raspberry Pi Pico.
 - SSD1306 128x64 0.9".
 - Protoboard.
@@ -93,6 +93,7 @@ with open('square.json', 'r+') as file:
 
 square = Drawer(oled, data) # Creating object Drawer
 ```
+> You can repeat above steps for all figures as you want.
 
 It's ready!, now, you can use some methods like `rotate`, `move` and `resize`.
 
